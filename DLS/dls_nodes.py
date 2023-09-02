@@ -123,7 +123,7 @@ def search_dls(node, goal, depth_limit, current_depth, visited, steps, num):
     
     steps.pop()
     
-    # Search in sibling nodes
+    #Search in sibling nodes
     for sibling in node.siblings:
         result_path = search_dls(sibling, goal, depth_limit, current_depth, visited,steps, num)
         if result_path:
