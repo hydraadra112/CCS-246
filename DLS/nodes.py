@@ -18,5 +18,6 @@ G.add_edges_from([[0,1], [0,2], [0,3], [0,4], [0,5], [0,6],
 # G.add_edges_from(H.edges)
 
 pos = nx.kamada_kawai_layout(G)
+
 nx.draw(G, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=1000)
 plt.show()
