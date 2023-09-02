@@ -68,17 +68,6 @@ def node_initialization():
     trunks.siblings = [boxes_2]
     
     graph_house = nx.Graph()
-    H = nx.path_graph(25)
-    
-    """""
-    lvr.children = [coffee_table, decorations, sofa_cushions, bookshelf]
-    br.children = [bed, closet, study_table]
-    k.children = [cabinets, pantry, appliances]
-    btr.children = [medicine_cabinet, sink, shower]
-    bsm.children = [boxes, shelves, utility]
-    att.children = [trunks, boxes_2]
-    
-    """
     
     graph_house.add_edges_from([[house.state,lvr.state], [house.state,br.state], 
                           [house.state,k.state], [house.state,btr.state], 
@@ -100,13 +89,14 @@ def node_initialization():
     return house, boxes, graph_house
 
 def search_dls(node, goal, depth_limit, current_depth, visited, steps, num):
+    
+    if current_depth >= depth_limit or node in visited:
+        return None
+    
     if node.state == goal.state:
         steps.append(node.state)
         print(f"Process #{num[0]} : Node @ {steps}")
         return [node.state]
-        
-    if current_depth >= depth_limit or node in visited:
-        return None
 
     visited.add(node) # to keep track of visited nodes
     
@@ -146,11 +136,6 @@ and 12 minutes for the entire basement.
 initial, goal, graph_house = node_initialization()
 
 # Plotting the nodes
-pos = nx.kamada_kawai_layout(graph_house)
-nx.draw(graph_house, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=1000, font_size=8)
-plt.show()
-
-
 depth_limit = 3
 visited_set = set()
 steps = list()
@@ -163,3 +148,7 @@ if result_path:
     print("The treasure is in:", result_path)
 else:
     print("No treasure has been found.")
+    
+pos = nx.kamada_kawai_layout(graph_house)
+nx.draw(graph_house, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=1000, font_size=8)
+plt.show()
