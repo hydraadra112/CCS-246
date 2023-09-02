@@ -68,24 +68,33 @@ def initialization():
     # Return initial and goal
     return house, boxes
 
-def search_dls(node, goal, depth_limit, current_depth, visited):
+def search_dls(node, goal, depth_limit, current_depth, visited,steps):
     if node.state == goal.state:
         return [node.state]
-
+        
     if current_depth >= depth_limit or node in visited:
         return None
 
-    visited.add(node)
+    visited.add(node) # to keep track of visited nodes
+    
+    # Print out the process of DLS
+    childrens = []
+    for child in node.children:
+        childrens.append(child.state)
+        
+    if childrens:
+        print(f"@ Node: {node.state}")
+        print(f"{node.state} - Child Nodes: {childrens}\n")
 
     # Search in children
     for child in node.children:
-        result_path = search_dls(child, goal, depth_limit, current_depth + 1, visited)
+        result_path = search_dls(child, goal, depth_limit, current_depth + 1, visited,steps)
         if result_path:
             return [node.state] + result_path
 
     # Search in sibling nodes
     for sibling in node.siblings:
-        result_path = search_dls(sibling, goal, depth_limit, current_depth + 1, visited)
+        result_path = search_dls(sibling, goal, depth_limit, current_depth + 1, visited,steps)
         if result_path:
             return result_path
 
@@ -108,9 +117,10 @@ depth_limit = 3
 
 # Perform depth-limited search
 visited_set = set()
-result_path = search_dls(initial, goal, depth_limit, 0, visited_set)
+steps = list()
+result_path = search_dls(initial, goal, depth_limit, 0, visited_set,steps)
 
 if result_path:
-    print("Treasure is in:", result_path)
+    print("The treasure is in:", result_path)
 else:
     print("No treasure has been found.")
