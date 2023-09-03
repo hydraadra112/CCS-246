@@ -91,11 +91,12 @@ def node_initialization():
                         [bsm.state, boxes.state], [bsm.state,shelves.state], [bsm.state,utility.state],
                         # [boxes.state, shelves.state], [shelves.state, utility.state],
                         
-                        [att.state, trunks.state], [att.state,boxes_2.state],
+                        [att.state, trunks.state], [att.state,boxes_2.state]
                         # [trunks.state, boxes_2.state],
                         
-                        [lvr.state,br.state], [br.state,k.state], [k.state,btr.state], 
-                        [btr.state,bsm.state], [bsm.state,att.state], [att.state,lvr.state]])
+                        # [lvr.state,br.state], [br.state,k.state], [k.state,btr.state], 
+                        # [btr.state,bsm.state], [bsm.state,att.state], [att.state,lvr.state]
+                        ])
 
     # Return initial and goal
     return house, boxes, graph_house
