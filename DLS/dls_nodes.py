@@ -75,24 +75,24 @@ def node_initialization():
                           
                         [lvr.state,coffee_table.state], [lvr.state,decorations.state], 
                         [lvr.state,sofa_cushions.state], [lvr.state, bookshelf.state],
-                        [coffee_table.state, decorations.state], [decorations.state, sofa_cushions.state],
-                        [sofa_cushions.state, bookshelf.state],
+                        # [coffee_table.state, decorations.state], [decorations.state, sofa_cushions.state],
+                        # [sofa_cushions.state, bookshelf.state],
                         
                         [br.state, bed.state], [br.state,closet.state], [br.state,study_table.state],
-                        [bed.state, closet.state], [closet.state, study_table.state],
+                        # [bed.state, closet.state], [closet.state, study_table.state],
                         
                         
                         [k.state, cabinets.state], [k.state,pantry.state], [k.state,appliances.state],
-                        [cabinets.state, pantry.state], [pantry.state, appliances.state],
+                        # [cabinets.state, pantry.state], [pantry.state, appliances.state],
                         
                         [btr.state, medicine_cabinet.state], [btr.state,sink.state], [btr.state,shower.state],
-                        [medicine_cabinet.state, sink.state], [sink.state, shower.state],
+                        # [medicine_cabinet.state, sink.state], [sink.state, shower.state],
                         
                         [bsm.state, boxes.state], [bsm.state,shelves.state], [bsm.state,utility.state],
-                        [boxes.state, shelves.state], [shelves.state, utility.state],
+                        # [boxes.state, shelves.state], [shelves.state, utility.state],
                         
                         [att.state, trunks.state], [att.state,boxes_2.state],
-                        [trunks.state, boxes_2.state],
+                        # [trunks.state, boxes_2.state],
                         
                         [lvr.state,br.state], [br.state,k.state], [k.state,btr.state], 
                         [btr.state,bsm.state], [bsm.state,att.state], [att.state,lvr.state]])
