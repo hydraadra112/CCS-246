@@ -90,7 +90,7 @@ def node_initialization():
 
 def search_dls(node, goal, depth_limit, current_depth, visited, steps, num):
     
-    if current_depth >= depth_limit or node in visited:
+    if current_depth > depth_limit or node in visited:
         return None
     
     if node.state == goal.state:
@@ -136,7 +136,7 @@ and 12 minutes for the entire basement.
 initial, goal, graph_house = node_initialization()
 
 # Plotting the nodes
-depth_limit = 3
+depth_limit = 2
 visited_set = set()
 steps = list()
 num = [1]
@@ -150,5 +150,5 @@ else:
     print("No treasure has been found.")
     
 pos = nx.kamada_kawai_layout(graph_house)
-nx.draw(graph_house, pos, with_labels=True, node_color='lightblue', font_weight='bold', node_size=1000, font_size=8)
+nx.draw(graph_house, pos, with_labels=True, node_color='#7bed9a', font_weight='bold', node_size=1000, font_size=5)
 plt.show()
