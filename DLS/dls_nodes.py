@@ -108,14 +108,14 @@ def search_dls(node, goal, depth_limit, current_depth, visited, steps, num):
     
     if node.state == goal.state:
         steps.append(node.state)
-        print(f"Process #{num[0]} : Node @ {steps}")
+        print(f"Step #{num[0]} : @ Node {steps}")
         return [node.state]
 
     visited.add(node) # to keep track of visited nodes
     
     # Print out the process of DLS
     steps.append(node.state)
-    print(f"Process #{num[0]} : Node @ {steps}")
+    print(f"Step #{num[0]} : @ Node {steps}")
     num[0] += 1
     
     # Search in children
