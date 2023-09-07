@@ -7,16 +7,17 @@ class Node:
     def __init__(self, data):
         self.data = data
         self.children = []
-def build_random_tree(values, depth, max_depth):
-    if depth >= max_depth or not values:
+
+def build_random_tree(data, depth, max_depth):
+    if depth >= max_depth or not data:
         return None
 
-    root_data = random.choice(values)
+    root_data = random.choice(data)
     root = Node(root_data)
-    values.remove(root_data)
+    data.remove(root_data)
 
-    for _ in range(random.randint(0, len(values))):  # Randomly choose the number of children
-        child = build_random_tree(values, depth + 1, max_depth)
+    for _ in range(len(data)):
+        child = build_random_tree(data, depth + 1, max_depth)
         if child:
             root.children.append(child)
 
@@ -35,42 +36,85 @@ def depth_limited_search(node, goal_node, current_depth, depth_limit, visited, t
     visited.add(node)
     
     for child in node.children:
-        result = depth_limited_search(child, goal_node, current_depth + 1, depth_limit, visited, track)
-        if result:
+        result = depth_limited_search(child,  goal_node, current_depth + 1, depth_limit, visited, track)
+        if result: 
             track.sort()
             return track[:5]
-    
-    return None
 
-def euclidean(classified_data_1, classified_data_2, column_letter_1, column_letter_2):
-    
+def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    workbook = xl.load_workbook(os.path.join(script_dir, 'data.xlsx'))
+    workbook = xl.load_workbook(os.path.join(script_dir, sheetname))
     sheet = workbook.active
-
-    # Under classifying Unlabeled Data
-    # classified_data_1 = 5.5 # float(input("Classified data 1: ")) # e.g. sepal length
-    # classified_data_2 = 5 # float(input("Classified data 2: ")) # e.g. sepal width
-
-    first_data = []
-    second_data = []
-
+    
+    P1_0_Data = []
+    P1_1_Data = []
+    
     start_row = 2  # 2 because 1 is usually labels
+    
+    if isinstance(P2_0_Letter, float) and isinstance(P2_1_Letter, float):
+        
+        for row in range(start_row, sheet.max_row + 1):  
+            cell = sheet[f'{P1_0_Letter}{row}']
+            if cell.value is not None:
+                P1_0_Data.append(cell.value)  # Append the value to the list
+            else:
+                # Stop the loop when an empty cell is encountered
+                break
+        
+        # input("Second column for Second data: ") # e.g. B
+        for row in range(start_row, sheet.max_row + 1):  
+            cell = sheet[f'{P1_1_Letter}{row}']
+            if cell.value is not None:
+                P1_1_Data.append(cell.value)  # Append the value to the list
+            else:
+                # Stop the loop when an empty cell is encountered
+                break
+            
+        workbook.close()
 
+        solve = []
+        for i in range(len(P1_0_Data)):
+            dt1 = P1_0_Data[i] - P2_0_Letter
+            dt2 =  P1_1_Data[i] - P2_1_Letter
+            dt1 = pow(dt1, 2)
+            dt2 = pow(dt2, 2)
+            solve.append(m.sqrt(dt1 + dt2))
+        return solve
+        
+    P2_0_Data = []
+    P2_1_Data = []
+    
     # Iterate through the column to get the first data
     for row in range(start_row, sheet.max_row + 1):  
-        cell = sheet[f'{column_letter_1}{row}']
+        cell = sheet[f'{P1_0_Letter}{row}']
         if cell.value is not None:
-            first_data.append(cell.value)  # Append the value to the list
+            P1_0_Data.append(cell.value)  # Append the value to the list
         else:
             # Stop the loop when an empty cell is encountered
             break
         
     # input("Second column for Second data: ") # e.g. B
     for row in range(start_row, sheet.max_row + 1):  
-        cell = sheet[f'{column_letter_2}{row}']
+        cell = sheet[f'{P1_1_Letter}{row}']
         if cell.value is not None:
-            second_data.append(cell.value)  # Append the value to the list
+            P1_1_Data.append(cell.value)  # Append the value to the list
+        else:
+            # Stop the loop when an empty cell is encountered
+            break
+        
+    for row in range(start_row, sheet.max_row + 1):  
+        cell = sheet[f'{P2_0_Letter}{row}']
+        if cell.value is not None:
+            P2_0_Data.append(cell.value)  # Append the value to the list
+        else:
+            # Stop the loop when an empty cell is encountered
+            break
+        
+    # input("Second column for Second data: ") # e.g. B
+    for row in range(start_row, sheet.max_row + 1):  
+        cell = sheet[f'{P2_1_Letter}{row}']
+        if cell.value is not None:
+            P2_1_Data.append(cell.value)  # Append the value to the list
         else:
             # Stop the loop when an empty cell is encountered
             break
@@ -78,15 +122,16 @@ def euclidean(classified_data_1, classified_data_2, column_letter_1, column_lett
     workbook.close()
 
     solve = []
-    for i in range(len(first_data)):
-        dt1 = first_data[i] - classified_data_1
-        dt2 = second_data[i] - classified_data_2
+    for i in range(len(P1_0_Data)):
+        dt1 = P1_0_Data[i] - P2_0_Data[i]
+        dt2 =  P1_1_Data[i] - P2_1_Data[i]
         dt1 = pow(dt1, 2)
         dt2 = pow(dt2, 2)
         solve.append(m.sqrt(dt1 + dt2))
     
     return solve
 
+"""
 def manhattan(column_letter_1, column_letter_2):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     workbook = xl.load_workbook(os.path.join(script_dir, 'data.xlsx'))
@@ -122,7 +167,6 @@ def manhattan(column_letter_1, column_letter_2):
         solve.append(first_data[i] - second_data[i])
     
     return solve
-
 def minkowski(column_letter_1, column_letter_2, p):
     if p <= 0:
         raise ValueError("Parameter p must be greater than 0")
@@ -159,37 +203,41 @@ def minkowski(column_letter_1, column_letter_2, p):
 
     workbook.close()
     
-    distance = 0.0
+    solve = []
     for i in range(len(first_data)):
-        distance += abs(first_data[i] - second_data[i]) ** p
-    return distance ** (1 / p)
+        d = abs(first_data[i] - second_data[i]) ** p
+        solve.append(d ** (1 / p))
+    return solve
+"""
 
-data = euclidean(5.5, 5, 'A', 'B')
+data = euclidean('A', 'B', 40.7128, -74.0060, 'data.xlsx') 
+# A and C for data 1, B and D for data 2
+# Solve eucledian by: Point1(A,B) and Point2(C,D)
+
 # data = manhattan('A', 'C')
-# minkowski = minkowski('A','B', 2)
-
-if minkowski:
-    print(f"Minkowski distance: {minkowski}")
-    exit()
-
+# data = minkowski('A','B', 2)
 
 goal_list = list(data)
 goal_list.sort()
+root_node = build_random_tree(data, 0, 5)
 
-# Define the maximum depth for the tree
-max_depth = 5 
-# Build a random tree from the taken data
-root_node = build_random_tree(data, 0, max_depth)
-
-# Find the 3 lowest value using DLS
 ranking = []
 track = []
 visited = set()
 
-for i in range(3):
+# Find the 5 lowest value using DLS
+for i in range(5):
     ranking.append(depth_limited_search(root_node, goal_list[i], 0, 5, visited, track))
 
-print(f"Ranking of DLS: {ranking}")
+ranking_ = []
+for sublist in ranking:
+    if isinstance(sublist, list):
+        for num in sublist:
+            ranking_.append(num)
+            continue
+    ranking_.append(sublist)
+        
+print(f"Ranking of DLS: {ranking_[:5]}")
 print(f"Actual Ranking: {goal_list[:5]}")
 
 
