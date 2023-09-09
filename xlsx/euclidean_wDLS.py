@@ -42,21 +42,38 @@ def depth_limited_search(node, goal_node, current_depth, depth_limit, visited, t
             return track[:5]
 
 def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
+    
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    workbook = xl.load_workbook(os.path.join(script_dir, sheetname))
-    sheet = workbook.active
+    extensions = {'xlsx':'xlsx', 'xlsm':'xlsm', 'xltx':'xltx', 'xltm':'xltm'}
+    
+    for extension in extensions.values():
+        try:
+            workbook = xl.load_workbook(os.path.join(script_dir, f"{sheetname}.{extension}"))
+            sheet = workbook.active
+        except FileNotFoundError:
+            continue
     
     P1_0_Data = []
     P1_1_Data = []
     
     start_row = 2  # 2 because 1 is usually labels
+    labels = dict()
+    
+    # Assigning labels to dictionary
+    for row in range(start_row, sheet.max_row + 1):  
+            cell = sheet[f'A{row}']
+            if cell.value is not None:
+                labels[cell.value] = 0  # Append the value to the list
+            else:
+                break
     
     if isinstance(P2_0_Letter, float) and isinstance(P2_1_Letter, float):
-        
         for row in range(start_row, sheet.max_row + 1):  
             cell = sheet[f'{P1_0_Letter}{row}']
+            forlabel = sheet[f'A{row}']
             if cell.value is not None:
                 P1_0_Data.append(cell.value)  # Append the value to the list
+                labels[forlabel.value] = cell.value
             else:
                 # Stop the loop when an empty cell is encountered
                 break
@@ -64,22 +81,29 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         # input("Second column for Second data: ") # e.g. B
         for row in range(start_row, sheet.max_row + 1):  
             cell = sheet[f'{P1_1_Letter}{row}']
+            forlabel = sheet[f'A{row}']
             if cell.value is not None:
                 P1_1_Data.append(cell.value)  # Append the value to the list
+                labels[forlabel.value] = cell.value
             else:
                 # Stop the loop when an empty cell is encountered
                 break
             
-        workbook.close()
-
+        # Answer
         solve = []
-        for i in range(len(P1_0_Data)):
-            dt1 = P1_0_Data[i] - P2_0_Letter
-            dt2 =  P1_1_Data[i] - P2_1_Letter
-            dt1 = pow(dt1, 2)
-            dt2 = pow(dt2, 2)
-            solve.append(m.sqrt(dt1 + dt2))
-        return solve
+        for row in range(start_row, sheet.max_row + 1):  
+            for i in range(len(P1_0_Data)):
+                dt1 = P1_0_Data[i] - P2_0_Letter
+                dt2 =  P1_1_Data[i] - P2_1_Letter
+                dt1 = pow(dt1, 2)
+                dt2 = pow(dt2, 2)
+                solve.append(m.sqrt(dt1 + dt2))
+                labels[sheet[f'A{row}'].value] = m.sqrt(dt1 + dt2)
+                row += 1
+                
+            workbook.close()
+            break
+        return solve, labels
         
     P2_0_Data = []
     P2_1_Data = []
@@ -87,8 +111,10 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     # Iterate through the column to get the first data
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P1_0_Letter}{row}']
+        forlabel = sheet[f'A{row}']
         if cell.value is not None:
             P1_0_Data.append(cell.value)  # Append the value to the list
+            labels[forlabel.value] = cell.value
         else:
             # Stop the loop when an empty cell is encountered
             break
@@ -96,8 +122,10 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     # input("Second column for Second data: ") # e.g. B
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P1_1_Letter}{row}']
+        forlabel = sheet[f'A{row}']
         if cell.value is not None:
             P1_1_Data.append(cell.value)  # Append the value to the list
+            labels[forlabel.value] = cell.value
         else:
             # Stop the loop when an empty cell is encountered
             break
@@ -119,17 +147,21 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
             # Stop the loop when an empty cell is encountered
             break
     
-    workbook.close()
-
-    solve = []
-    for i in range(len(P1_0_Data)):
-        dt1 = P1_0_Data[i] - P2_0_Data[i]
-        dt2 =  P1_1_Data[i] - P2_1_Data[i]
-        dt1 = pow(dt1, 2)
-        dt2 = pow(dt2, 2)
-        solve.append(m.sqrt(dt1 + dt2))
     
-    return solve
+    # Answer
+        solve = []
+        for row in range(start_row, sheet.max_row + 1):  
+            for i in range(len(P1_0_Data)):
+                dt1 = P1_0_Data[i] - P2_0_Data[i]
+                dt2 =  P1_1_Data[i] - P2_1_Data[i]
+                dt1 = pow(dt1, 2)
+                dt2 = pow(dt2, 2)
+                solve.append(m.sqrt(dt1 + dt2))
+                labels[sheet[f'A{row}'].value] = m.sqrt(dt1 + dt2)
+                row += 1
+            workbook.close()
+            break
+        return solve, labels
 
 """
 def manhattan(column_letter_1, column_letter_2):
@@ -207,10 +239,13 @@ def minkowski(column_letter_1, column_letter_2, p):
     for i in range(len(first_data)):
         d = abs(first_data[i] - second_data[i]) ** p
         solve.append(d ** (1 / p))
+        
+        ABS((B2-$D$3) + (C2-$E$3))**(1/2)
+        
     return solve
 """
 
-data = euclidean('A', 'B', 40.7128, -74.0060, 'data.xlsx') 
+data, labels = euclidean('B', 'C', 40.7128, -74.006, 'data') 
 # A and C for data 1, B and D for data 2
 # Solve eucledian by: Point1(A,B) and Point2(C,D)
 
@@ -218,16 +253,18 @@ data = euclidean('A', 'B', 40.7128, -74.0060, 'data.xlsx')
 # data = minkowski('A','B', 2)
 
 goal_list = list(data)
+sorted_labels = dict(sorted(labels.items(), key=lambda item: item[1])) # sorted by value
+
 goal_list.sort()
-root_node = build_random_tree(data, 0, 5)
+root_node = build_random_tree(data, 0, 3)
 
 ranking = []
 track = []
 visited = set()
 
 # Find the 5 lowest value using DLS
-for i in range(5):
-    ranking.append(depth_limited_search(root_node, goal_list[i], 0, 5, visited, track))
+for i in range(3):
+    ranking.append(depth_limited_search(root_node, goal_list[i], 0, 3, visited, track))
 
 ranking_ = []
 for sublist in ranking:
@@ -236,8 +273,10 @@ for sublist in ranking:
             ranking_.append(num)
             continue
     ranking_.append(sublist)
-        
-print(f"Ranking of DLS: {ranking_[:5]}")
-print(f"Actual Ranking: {goal_list[:5]}")
+
+
+print(f"Ranking of DLS: {ranking_[:3]}\n")
+for name, val in sorted_labels.items():
+    print(f"{name} : {val}")
 
 
