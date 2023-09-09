@@ -274,8 +274,9 @@ for sublist in ranking:
             continue
     ranking_.append(sublist)
 
-
-print(f"Ranking of DLS: {ranking_[:3]}\n")
+print(f"Ranking of DLS: {ranking_[:3]}")
+    
+print("\nActual Ranking: ")
 for name, val in sorted_labels.items():
     print(f"{name} : {val}")
 
