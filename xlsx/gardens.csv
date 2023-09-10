@@ -1,0 +1,10 @@
+NAME,LATITUDE,LONGITUDE,My Latitude,My Longitude,Distance between in Km,Euclidean Ranking,Eucledian Distance,Manhattan Ranking,Manhattan Distance,Minkowski Ranking,Minkowski Distance
+New York Botanical Garden,40.86387979,-73.8782681,40.7128,-74.006,0.1519,4,0.197839685,4,0.27881169,4,0.197839685
+Brooklyn Botanic Garden,40.66731538,-73.96340682,40.7128,-74.006,0.0455,1,0.062313962,2,-0.002891442,1,0.062313962
+Queens Botanical Garden,40.75045693,-73.82957497,40.7128,-74.006,0.0377,3,0.180399101,3,0.214081963,3,0.180399101
+Snug Harbor Cultural Center and Botanical Garden,40.64510127,-74.10455649,40.7128,-74.006,0.0677,2,0.11956797,1,-0.166255218,2,0.11956797
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
