@@ -61,14 +61,14 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     
     # Assigning labels to dictionary
     for row in range(start_row, sheet.max_row + 1):  
-            cell = sheet[f'A{row}']
-            if cell.value is not None:
-                labels[cell.value] = 0  # Append the value to the list
-            else:
-                break
-    
-    if isinstance(P2_0_Letter, float) and isinstance(P2_1_Letter, float):
-        for row in range(start_row, sheet.max_row + 1):  
+        cell = sheet[f'A{row}']
+        if cell.value is not None:
+            labels[cell.value] = 0  # Append the value to the list
+        else:
+            break
+            
+    # P1 Data
+    for row in range(start_row, sheet.max_row + 1):  
             cell = sheet[f'{P1_0_Letter}{row}']
             forlabel = sheet[f'A{row}']
             if cell.value is not None:
@@ -78,20 +78,22 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
                 # Stop the loop when an empty cell is encountered
                 break
         
-        # input("Second column for Second data: ") # e.g. B
-        for row in range(start_row, sheet.max_row + 1):  
-            cell = sheet[f'{P1_1_Letter}{row}']
-            forlabel = sheet[f'A{row}']
-            if cell.value is not None:
-                P1_1_Data.append(cell.value)  # Append the value to the list
-                labels[forlabel.value] = cell.value
-            else:
-                # Stop the loop when an empty cell is encountered
-                break
-            
+    # input("Second column for Second data: ") # e.g. B
+    for row in range(start_row, sheet.max_row + 1):  
+        cell = sheet[f'{P1_1_Letter}{row}']
+        forlabel = sheet[f'A{row}']
+        if cell.value is not None:
+            P1_1_Data.append(cell.value)  # Append the value to the list
+            labels[forlabel.value] = cell.value
+        else:
+            # Stop the loop when an empty cell is encountered
+            break
+        
+    solve = []
+    
+    if isinstance(P2_0_Letter, float) and isinstance(P2_1_Letter, float):
         # Answer
-        solve = []
-        for row in range(start_row, sheet.max_row + 1):  
+        for row in range(start_row, sheet.max_row + 1):
             for i in range(len(P1_0_Data)):
                 dt1 = P1_0_Data[i] - P2_0_Letter
                 dt2 =  P1_1_Data[i] - P2_1_Letter
@@ -107,28 +109,6 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         
     P2_0_Data = []
     P2_1_Data = []
-    
-    # Iterate through the column to get the first data
-    for row in range(start_row, sheet.max_row + 1):  
-        cell = sheet[f'{P1_0_Letter}{row}']
-        forlabel = sheet[f'A{row}']
-        if cell.value is not None:
-            P1_0_Data.append(cell.value)  # Append the value to the list
-            labels[forlabel.value] = cell.value
-        else:
-            # Stop the loop when an empty cell is encountered
-            break
-        
-    # input("Second column for Second data: ") # e.g. B
-    for row in range(start_row, sheet.max_row + 1):  
-        cell = sheet[f'{P1_1_Letter}{row}']
-        forlabel = sheet[f'A{row}']
-        if cell.value is not None:
-            P1_1_Data.append(cell.value)  # Append the value to the list
-            labels[forlabel.value] = cell.value
-        else:
-            # Stop the loop when an empty cell is encountered
-            break
         
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P2_0_Letter}{row}']
@@ -146,22 +126,19 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         else:
             # Stop the loop when an empty cell is encountered
             break
-    
-    
+     
     # Answer
-        solve = []
-        for row in range(start_row, sheet.max_row + 1):  
-            for i in range(len(P1_0_Data)):
-                dt1 = P1_0_Data[i] - P2_0_Data[i]
-                dt2 =  P1_1_Data[i] - P2_1_Data[i]
-                dt1 = pow(dt1, 2)
-                dt2 = pow(dt2, 2)
-                solve.append(m.sqrt(dt1 + dt2))
-                labels[sheet[f'A{row}'].value] = m.sqrt(dt1 + dt2)
-                row += 1
-            workbook.close()
-            break
-        return solve, labels
+    for row in range(start_row, sheet.max_row + 1):  
+        for i in range(len(P1_0_Data)):
+            dt1 = P1_0_Data[i] - P2_0_Data[i]
+            dt2 =  P1_1_Data[i] - P2_1_Data[i]
+            dt1 = pow(dt1, 2)
+            dt2 = pow(dt2, 2)
+            solve.append(m.sqrt(dt1 + dt2))
+            labels[sheet[f'A{row}'].value] = m.sqrt(dt1 + dt2)
+        workbook.close()
+        break
+    return solve, labels
 
 """
 def manhattan(column_letter_1, column_letter_2):
@@ -245,7 +222,7 @@ def minkowski(column_letter_1, column_letter_2, p):
     return solve
 """
 
-data, labels = euclidean('B', 'C', 40.7128, -74.006, 'data') 
+data, labels = euclidean('B', 'C', 'D', 'E', 'data') 
 # A and C for data 1, B and D for data 2
 # Solve eucledian by: Point1(A,B) and Point2(C,D)
 
@@ -263,8 +240,8 @@ track = []
 visited = set()
 
 # Find the 5 lowest value using DLS
-for i in range(3):
-    ranking.append(depth_limited_search(root_node, goal_list[i], 0, 3, visited, track))
+for i in range(len(labels)):
+    ranking.append(depth_limited_search(root_node, goal_list[i], 0, len(labels)+1, visited, track))
 
 ranking_ = []
 for sublist in ranking:
@@ -272,9 +249,11 @@ for sublist in ranking:
         for num in sublist:
             ranking_.append(num)
             continue
-    ranking_.append(sublist)
+        
+store = set()
+ranking__ = [x for x in ranking_ if x not in store and not store.add(x)]
 
-print(f"Ranking of DLS: {ranking_[:3]}")
+print(f"Ranking of DLS: {ranking__[:len(labels)]}")
     
 print("\nActual Ranking: ")
 for name, val in sorted_labels.items():
