@@ -67,7 +67,7 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         else:
             break
             
-    # P1 Data
+    # P1 Data, Element 0
     for row in range(start_row, sheet.max_row + 1):  
             cell = sheet[f'{P1_0_Letter}{row}']
             forlabel = sheet[f'A{row}']
@@ -78,7 +78,7 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
                 # Stop the loop when an empty cell is encountered
                 break
         
-    # input("Second column for Second data: ") # e.g. B
+    # P1 Data, Element 1
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P1_1_Letter}{row}']
         forlabel = sheet[f'A{row}']
@@ -112,8 +112,10 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P2_0_Letter}{row}']
+        forlabel = sheet[f'A{row}']
         if cell.value is not None:
             P2_0_Data.append(cell.value)  # Append the value to the list
+            labels[forlabel.value] = cell.value
         else:
             # Stop the loop when an empty cell is encountered
             break
@@ -121,8 +123,10 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     # input("Second column for Second data: ") # e.g. B
     for row in range(start_row, sheet.max_row + 1):  
         cell = sheet[f'{P2_1_Letter}{row}']
+        forlabel = sheet[f'A{row}']
         if cell.value is not None:
             P2_1_Data.append(cell.value)  # Append the value to the list
+            labels[forlabel.value] = cell.value
         else:
             # Stop the loop when an empty cell is encountered
             break
@@ -136,6 +140,7 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
             dt2 = pow(dt2, 2)
             solve.append(m.sqrt(dt1 + dt2))
             labels[sheet[f'A{row}'].value] = m.sqrt(dt1 + dt2)
+            row += 1
         workbook.close()
         break
     return solve, labels
@@ -222,7 +227,7 @@ def minkowski(column_letter_1, column_letter_2, p):
     return solve
 """
 
-data, labels = euclidean('B', 'C', 'D', 'E', 'data') 
+data, labels = euclidean('B', 'C', 'D', 'E', 'data')
 # A and C for data 1, B and D for data 2
 # Solve eucledian by: Point1(A,B) and Point2(C,D)
 
