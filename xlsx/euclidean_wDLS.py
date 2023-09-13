@@ -8,7 +8,7 @@ class Node:
         self.data = data
         self.children = []
 
-def build_random_tree(data, depth, max_depth):
+def build_tree(data, depth, max_depth):
     if depth >= max_depth or not data:
         return None
 
@@ -17,29 +17,25 @@ def build_random_tree(data, depth, max_depth):
     data.remove(root_data)
 
     for _ in range(len(data)):
-        child = build_random_tree(data, depth + 1, max_depth)
+        child = build_tree(data, depth + 1, max_depth)
         if child:
             root.children.append(child)
 
     return root
 
-def depth_limited_search(node, goal_node, current_depth, depth_limit, visited, track):
+def depth_limited_search(node, goal_node, current_depth, depth_limit, track):
     if node.data == goal_node:
         track.append(node.data)
-        track.sort
-        return track[:5]
-    
-    if node in visited:
-        return None
+        track.sort()
+        return track
     
     track.append(node.data)
-    visited.add(node)
     
     for child in node.children:
-        result = depth_limited_search(child,  goal_node, current_depth + 1, depth_limit, visited, track)
+        result = depth_limited_search(child,  goal_node, current_depth + 1, depth_limit, track)
         if result: 
             track.sort()
-            return track[:5]
+            return track
 
 def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     
@@ -91,7 +87,7 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
         
     solve = []
     
-    if isinstance(P2_0_Letter, float) and isinstance(P2_1_Letter, float):
+    if (isinstance(P2_0_Letter, float) or isinstance(P2_0_Letter, int)) and (isinstance(P2_1_Letter, float) or isinstance(P2_1_Letter, int)):
         # Answer
         for row in range(start_row, sheet.max_row + 1):
             for i in range(len(P1_0_Data)):
@@ -236,17 +232,15 @@ data, labels = euclidean('B', 'C', 'D', 'E', 'data')
 
 goal_list = list(data)
 sorted_labels = dict(sorted(labels.items(), key=lambda item: item[1])) # sorted by value
-
 goal_list.sort()
-root_node = build_random_tree(data, 0, 3)
+root_node = build_tree(data, 0, len(labels)+1)
 
 ranking = []
 track = []
-visited = set()
 
 # Find the 5 lowest value using DLS
 for i in range(len(labels)):
-    ranking.append(depth_limited_search(root_node, goal_list[i], 0, len(labels)+1, visited, track))
+    ranking.append(depth_limited_search(root_node, goal_list[i], 0, len(labels)+1, track))
 
 ranking_ = []
 for sublist in ranking:
@@ -254,14 +248,13 @@ for sublist in ranking:
         for num in sublist:
             ranking_.append(num)
             continue
+    ranking_.append(num)
         
 store = set()
 ranking__ = [x for x in ranking_ if x not in store and not store.add(x)]
 
 print(f"Ranking of DLS: {ranking__[:len(labels)]}")
-    
+
 print("\nActual Ranking: ")
 for name, val in sorted_labels.items():
     print(f"{name} : {val}")
-
-
