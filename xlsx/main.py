@@ -3,6 +3,10 @@ import openpyxl as xl
 import math as m
 import os
 
+# Get directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 class Node:
     def __init__(self, data):
         self.data = data
@@ -38,9 +42,6 @@ def depth_limited_search(node, goal_node, current_depth, depth_limit, track):
             return track
 
 def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
-    
-    # Get the directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     
     # All possible extensions
     extensions = {'xlsx':'xlsx', 'xlsm':'xlsm', 'xltx':'xltx', 'xltm':'xltm'}
@@ -145,9 +146,6 @@ def euclidean(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     return solve, labels
 
 def manhattan(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
-    # Get the directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
     # All possible extensions
     extensions = {'xlsx':'xlsx', 'xlsm':'xlsm', 'xltx':'xltx', 'xltm':'xltm'}
     
@@ -250,8 +248,6 @@ def manhattan(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname):
     return solve, labels
 
 def minkowski(P1_0_Letter, P1_1_Letter, P2_0_Letter, P2_1_Letter, sheetname, p=3):
-    # Get the directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     
     # All possible extensions
     extensions = {'xlsx':'xlsx', 'xlsm':'xlsm', 'xltx':'xltx', 'xltm':'xltm'}
@@ -410,25 +406,28 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import matplotlib.pyplot as plt
 
 filename = 'data_2'
-file_extensions = {'xlsx': pd.read_excel, 'csv':pd.read_csv, 'xls':pd.read_excel}
+file_extensions = {'xlsx': pd.read_excel, 'csv': pd.read_csv, 'xls': pd.read_excel}
+
 for ext, func in file_extensions.items():
     try:
-        df = func(f'{filename}.{ext}')
+        df = func(os.path.join(script_dir, f'{filename}.{ext}'))
         break
     except FileNotFoundError:
         continue
 
+# Now that df is defined, you can modify it
 # NY Garden = 1
-df.loc [0,['Name']] = [1]
+df.loc[0, 'Name'] = 1
 
 # Brooklyn Garden = 2
-df.loc [1,['Name']] = [2]
+df.loc[1, 'Name'] = 2
 
-# Queens Gardern = 3
-df.loc [2,['Name']] = [3]
+# Queens Garden = 3
+df.loc[2, 'Name'] = 3
 
 # Snug Garden = 4
-df.loc [3,['Name']] = [4]
+df.loc[3, 'Name'] = 4
+
 
 
 #Rename Columns
